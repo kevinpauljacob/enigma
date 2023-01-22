@@ -32,8 +32,8 @@ const Form = () => {
     setEncryptedMsg(data);
     setEncryptedMsg(data);
     
-    console.log(encryptMsg);
-    console.log(encryptedMsg);
+    // console.log(encryptMsg);
+    // console.log(encryptedMsg);
 
     if(encryptedMsg) {
         setGenerateLink(false);
@@ -54,8 +54,8 @@ const Form = () => {
     const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
     setDecryptedMsg(data);
 
-    console.log(decryptMsg);
-    console.log(decryptedMsg);
+    // console.log(decryptMsg);
+    // console.log(decryptedMsg);
 
     setDecryptMsg("");
   }
