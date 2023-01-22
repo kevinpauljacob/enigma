@@ -1,46 +1,64 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AiOutlineLock } from 'react-icons/ai'
 import { BsBoxArrowLeft } from 'react-icons/bs'
 import { RiErrorWarningLine } from 'react-icons/ri'
+import { BiShareAlt, BiCopy  } from 'react-icons/bi'
 import CryptoJS from "crypto-js";
-import Link from './Link'
 
 const Form = () => {
 
   const [generateLink, setGenerateLink] = useState(true);
   const [downloadLink, setDownloadLink] = useState(false);
-  const [msg, setMsg] = useState("");
+  const [decryptLink, setDecryptLink] = useState(false);
   const [error, setError] = useState(false);
+  const [encryptMsg, setEncryptMsg] = useState("");
   const [encryptedMsg, setEncryptedMsg] = useState("");
-  const [secretLink, setSecretLink] = useState(true);
+  const [decryptMsg, setDecryptMsg] = useState("");
+  const [decryptedMsg, setDecryptedMsg] = useState("");
 
-  const msgHandler = (e) => {
-    console.log(e.target.value);
-    setMsg(e.target.value);
+  useEffect(() => {
+    msgEncryptionHandler();
+  }, []);
+
+  const msgEncryptionHandler = () => {
     setError(false);
-  }
 
-  const encryptMsg = () => {
     const salt = import.meta.env.VITE_ENCRYPTION_SALT;
-
     const data = CryptoJS.AES.encrypt(
-      JSON.stringify(msg),
-      salt
-    ).toString();
+        JSON.stringify(encryptMsg),
+        salt
+      ).toString();
+  
     setEncryptedMsg(data);
+    setEncryptedMsg(data);
+    
+    console.log(encryptMsg);
     console.log(encryptedMsg);
 
-    const link = `${window.location}#${encryptedMsg}`;
-    setSecretLink(link)
-    console.log(link);
-    if(msg) {
+    if(encryptedMsg) {
         setGenerateLink(false);
         setDownloadLink(true);
-    } else {
+        setDecryptLink(false);
+    } 
+    
+    if(!encryptMsg) {
         setError(true);
     }
-    setMsg("");
-  };
+
+    setEncryptMsg("");
+  }
+
+  const msgDecryptionHandler = () => {
+    const salt = import.meta.env.VITE_ENCRYPTION_SALT;
+    const bytes = CryptoJS.AES.decrypt(decryptMsg, salt);
+    const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    setDecryptedMsg(data);
+
+    console.log(decryptMsg);
+    console.log(decryptedMsg);
+
+    setDecryptMsg("");
+  }
 
   return (
     <div className="w-full rounded-md">
@@ -51,13 +69,13 @@ const Form = () => {
                 type="text" 
                 name="text" 
                 placeholder="Type your Secret Message."
-                value={msg}
-                onChange={msgHandler}
+                value={encryptMsg}
+                onChange={({target}) => {setEncryptMsg(target.value)}}
             />
             <div className='flex justify-between items-center w-full mt-5'>
-                <p className=''>
+                <div className=''>
                     <div className='flex items-center'>
-                        <span className='pr-1'>
+                        <span className='text-[#39FF14] pr-1'>
                             <AiOutlineLock size={25}/>
                         </span>
                         <span>End-to-End encrypted</span>
@@ -70,9 +88,9 @@ const Form = () => {
                             Message is compulsory
                         </div>
                     }
-                </p>
+                </div>
                 <button 
-                    onClick={encryptMsg}
+                    onClick={msgEncryptionHandler}
                     className="hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2"
                     type="submit"
                 >
@@ -83,31 +101,88 @@ const Form = () => {
         }
         {downloadLink &&
             <div className='bg-[#212121] rounded-md p-5'>
-                <p 
-                    onClick={() => {
-                        setDownloadLink(false)
-                        setGenerateLink(true)
-                    }}
-                    className='flex items-center hover:text-[#39FF14] ease-in duration-300'
-                >   
-                    <span className='pr-2'>
-                        <BsBoxArrowLeft size={20}/>
-                    </span>
-                    Generate New Secret Link
-                </p>
-                <div className='text-lg bg-[#212121] rounded-md border-2 border-[#616161] p-3 w-full my-5'>
-                    {secretLink}
-                </div>
+                <textarea 
+                    readOnly
+                    value={encryptedMsg}
+                    className='scroll text-lg bg-[#212121] rounded-md border-2 border-[#616161] p-3 w-full mb-5 h-full'
+                >
+                </textarea>
                 <div className='flex justify-center'>
-                    <button className='hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 mr-5'>
+                    <button className='flex hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 mr-5'>
+                        <span className='pr-1'>
+                            <BiShareAlt size={25}/>
+                        </span>
                         Share via Mail
                     </button>
-                    <button className='hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 ml-5'>
+                    <button 
+                        className='flex hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 ml-5'
+                        onClick={() => {navigator.clipboard.writeText(encryptedMsg)}}
+                    >
+                        <span className='pr-1'>
+                            <BiCopy size={25}/>
+                        </span>
                         Copy Link
                     </button>
                 </div>
             </div>
         }
+        {decryptLink &&
+            <div className='flex flex-col items-center bg-[#212121] rounded-md p-5'>
+                <textarea
+                    value={decryptMsg} 
+                    onChange={({target}) => {setDecryptMsg(target.value)}}
+                    placeholder='Paste your link.'
+                    className='scroll text-lg bg-[#212121] rounded-md border-2 border-[#414141] focus:border-[#616161] focus:outline-none p-3 w-full h-full'
+                >
+                </textarea>
+                <button 
+                    onClick={msgDecryptionHandler}
+                    className="hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md my-5 p-2"
+                    type="submit"
+                >
+                    Decrypt Message
+                </button>
+                <textarea
+                    readOnly
+                    value={decryptedMsg} 
+                    className='scroll text-lg bg-[#212121] rounded-md border-2 border-[#414141] focus:border-[#616161] focus:outline-none p-3 w-full h-full'
+                >
+                </textarea>
+            </div>
+        }
+        <div className='text-lg flex flex-col items-start mt-10 pl-1'>   
+            {!generateLink && 
+                <div 
+                    onClick={() => {
+                        setDownloadLink(false)
+                        setGenerateLink(true)
+                        setDecryptLink(false)
+                        setDecryptedMsg("")
+                    }}
+                    className='flex items-center hover:text-[#39FF14] ease-in duration-300'
+                >
+                    <span className='pr-2'>
+                        <BsBoxArrowLeft size={20}/>
+                    </span>
+                    Generate New Secret Link
+                </div> 
+            }
+            {!decryptLink && 
+                <div 
+                    onClick={() => {
+                        setDownloadLink(false)
+                        setGenerateLink(false)
+                        setDecryptLink(true)
+                    }}
+                    className='flex items-center hover:text-[#39FF14] ease-in duration-300'
+                >
+                    <span className='pr-2'>
+                        <BsBoxArrowLeft size={20}/>
+                    </span>
+                    Decrypt a message?
+                </div> 
+            }
+        </div>
     </div>
   )
 }
