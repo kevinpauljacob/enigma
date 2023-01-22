@@ -63,17 +63,17 @@ const Form = () => {
   return (
     <div className="w-full rounded-md">
         {generateLink &&
-        <div className="flex flex-col items-end bg-[#212121] rounded-md p-5">
+        <div className="flex flex-col items-end bg-[#212121] rounded-md p-3 min-[510px]:p-5">
             <textarea 
-                className="scroll text-lg bg-[#212121] rounded-md border-2 border-[#313131] focus:border-[#616161] focus:outline-none p-3 w-full"
+                className="scroll text-md min-[510px]:text-lg bg-[#212121] rounded-md border-2 border-[#313131] focus:border-[#616161] focus:outline-none p-3 w-full"
                 type="text" 
                 name="text" 
                 placeholder="Type your Secret Message."
                 value={encryptMsg}
                 onChange={({target}) => {setEncryptMsg(target.value)}}
             />
-            <div className='flex justify-between items-center w-full mt-5'>
-                <div className=''>
+            <div className='text-sm min-[510px]:text-md flex flex-col min-[510px]:flex-row justify-between items-center w-full mt-5'>
+                <div className='flex flex-col justify-between'>
                     <div className='flex items-center'>
                         <span className='text-[#39FF14] pr-1'>
                             <AiOutlineLock size={25}/>
@@ -81,7 +81,7 @@ const Form = () => {
                         <span>End-to-End encrypted</span>
                     </div>
                     { error && 
-                        <div className='flex items-center text-red-500 font-semibold mt-1'>
+                        <div className='flex items-center text-red-500 font-semibold mt-2'>
                             <span className='pr-1'>
                                 <RiErrorWarningLine size={25}/>
                             </span>
@@ -91,7 +91,7 @@ const Form = () => {
                 </div>
                 <button 
                     onClick={msgEncryptionHandler}
-                    className="hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2"
+                    className="text-sm min-[510px]:text-lg hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 mt-5 min-[510px]:mt-0"
                     type="submit"
                 >
                     Generate Secret Link
@@ -107,15 +107,15 @@ const Form = () => {
                     className='scroll text-lg bg-[#212121] rounded-md border-2 border-[#616161] p-3 w-full mb-5 h-full'
                 >
                 </textarea>
-                <div className='flex justify-center'>
-                    <button className='flex hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 mr-5'>
+                <div className='flex flex-col min-[510px]:flex-row justify-center'>
+                    <button className='flex hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 min-[510px]:mr-5'>
                         <span className='pr-1'>
                             <BiShareAlt size={25}/>
                         </span>
                         Share via Mail
                     </button>
                     <button 
-                        className='flex hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 ml-5'
+                        className='flex hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 mt-5 min-[510px]:mt-0 min-[510px]:ml-5'
                         onClick={() => {navigator.clipboard.writeText(encryptedMsg)}}
                     >
                         <span className='pr-1'>
