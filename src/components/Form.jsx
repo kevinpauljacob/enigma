@@ -91,7 +91,7 @@ const Form = () => {
                 </div>
                 <button 
                     onClick={msgEncryptionHandler}
-                    className="text-sm min-[510px]:text-lg hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 mt-5 min-[510px]:mt-0"
+                    className="text-sm min-[510px]:text-lg hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 mt-3 min-[510px]:mt-0"
                     type="submit"
                 >
                     Generate Secret Link
