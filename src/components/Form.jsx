@@ -55,7 +55,7 @@ const Form = () => {
   }
 
   const msgDecryptionHandler = async () => {
-    const link = decryptMsg.replace("/", "");
+    const link = decryptMsg.replaceAll("/", "");
     const docRef = doc(db, "links", link);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
@@ -73,7 +73,7 @@ const Form = () => {
   }
 
   const burnMsg = async () => {
-    const link = decryptMsg.replace("/", "");
+    const link = decryptMsg.replaceAll("/", "");
     await deleteDoc(doc(db, "links", link));
     setDecryptedMsg("");
     setDecryptMsg("");
@@ -135,7 +135,7 @@ const Form = () => {
                         className='flex hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 min-[510px]:mr-5'
                         onClick={async () => {
                             navigator.clipboard.writeText(encryptedMsg)
-                            const link = encryptedMsg.replace("/", "");
+                            const link = encryptedMsg.replaceAll("/", "");
                             await setDoc(doc(db, "links", link), {})
                             window.location = 'mailto:'
                         }}
@@ -149,7 +149,7 @@ const Form = () => {
                         className='flex hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 mt-5 min-[510px]:mt-0 min-[510px]:ml-5'
                         onClick={ async () => {
                             navigator.clipboard.writeText(encryptedMsg)
-                            const link = encryptedMsg.replace("/", "");
+                            const link = encryptedMsg.replaceAll("/", "");
                             await setDoc(doc(db, "links", link), {})
                         }}
                     >
@@ -226,7 +226,7 @@ const Form = () => {
                         setDecryptLink(true)
                         setDecryptMsg("")
                         setDecryptedMsg("")
-                        const link = encryptedMsg.replace("/", "");
+                        const link = encryptedMsg.replaceAll("/", "");
                         await setDoc(doc(db, "links", link), {})
                     }}
                     className='flex items-center hover:text-[#39FF14] ease-in duration-300'
