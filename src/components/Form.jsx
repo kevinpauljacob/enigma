@@ -5,7 +5,7 @@ import { RiErrorWarningLine } from 'react-icons/ri'
 import { BiShareAlt, BiCopy  } from 'react-icons/bi'
 import CryptoJS from "crypto-js";
 
-import { doc, setDoc, deleteDoc } from "firebase/firestore"; 
+import { doc, setDoc, getDoc, deleteDoc } from "firebase/firestore"; 
 import { db } from '../../firebase-config'
 
 const Form = () => {
@@ -13,19 +13,22 @@ const Form = () => {
   const [generateLink, setGenerateLink] = useState(true);
   const [downloadLink, setDownloadLink] = useState(false);
   const [decryptLink, setDecryptLink] = useState(false);
-  const [error, setError] = useState(false);
+
+  const [msgRequiredError, setMsgRequiredError] = useState(false);
+  const [invalidLink, setInvalidLink] = useState(false);
+
   const [encryptMsg, setEncryptMsg] = useState("");
   const [encryptedMsg, setEncryptedMsg] = useState("");
   const [decryptMsg, setDecryptMsg] = useState("");
   const [decryptedMsg, setDecryptedMsg] = useState("");
+
+
 
   useEffect(() => {
     msgEncryptionHandler();
   }, []);
 
   const msgEncryptionHandler = async () => {
-    setError(false);
-
     const salt = import.meta.env.VITE_ENCRYPTION_SALT;
     const data = CryptoJS.AES.encrypt(
         JSON.stringify(encryptMsg),
@@ -38,24 +41,32 @@ const Form = () => {
     // console.log(encryptMsg);
     // console.log(encryptedMsg);
 
-    if(encryptedMsg) {
+    if(encryptMsg && encryptedMsg) {
         setGenerateLink(false);
         setDownloadLink(true);
         setDecryptLink(false);
     } 
     
     if(!encryptMsg) {
-        setError(true);
+        setMsgRequiredError(true);
     }
 
     setEncryptMsg("");
   }
 
-  const msgDecryptionHandler = () => {
-    const salt = import.meta.env.VITE_ENCRYPTION_SALT;
-    const bytes = CryptoJS.AES.decrypt(decryptMsg, salt);
-    const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-    setDecryptedMsg(data);
+  const msgDecryptionHandler = async () => {
+    const link = decryptMsg.replace("/", "");
+    const docRef = doc(db, "links", link);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        setInvalidLink(false);
+        const salt = import.meta.env.VITE_ENCRYPTION_SALT;
+        const bytes = CryptoJS.AES.decrypt(decryptMsg, salt);
+        const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+        setDecryptedMsg(data);
+      } else {
+        setInvalidLink(true);
+      }
 
     // console.log(decryptMsg);
     // console.log(decryptedMsg);
@@ -78,7 +89,10 @@ const Form = () => {
                 name="text" 
                 placeholder="Type your Secret Message."
                 value={encryptMsg}
-                onChange={({target}) => {setEncryptMsg(target.value)}}
+                onChange={({target}) => {
+                    setEncryptMsg(target.value)
+                    setMsgRequiredError(false)
+                }}
             />
             <div className='text-sm min-[510px]:text-md flex flex-col min-[510px]:flex-row justify-between items-center w-full mt-5'>
                 <div className='flex flex-col justify-between'>
@@ -88,7 +102,7 @@ const Form = () => {
                         </span>
                         <span>End-to-End encrypted</span>
                     </div>
-                    { error && 
+                    { msgRequiredError && 
                         <div className='flex items-center text-red-500 font-semibold mt-2'>
                             <span className='pr-1'>
                                 <RiErrorWarningLine size={25}/>
@@ -156,6 +170,14 @@ const Form = () => {
                     className='scroll text-lg bg-[#212121] rounded-md border-2 border-[#414141] focus:border-[#616161] focus:outline-none p-3 w-full h-full'
                 >
                 </textarea>
+                {invalidLink && 
+                        <div className='flex items-center text-red-500 font-semibold mt-5'>
+                        <span className='pr-1'>
+                            <RiErrorWarningLine size={25}/>
+                        </span>
+                        Invalid Link
+                    </div>
+                }
                 <button 
                     onClick={msgDecryptionHandler}
                     className="hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md my-5 p-2"
