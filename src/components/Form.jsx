@@ -209,6 +209,7 @@ const Form = () => {
                         setDecryptLink(false)
                         setDecryptMsg("")
                         setDecryptedMsg("")
+                        setInvalidLink(false)
                     }}
                     className='flex items-center hover:text-[#39FF14] ease-in duration-300'
                 >
