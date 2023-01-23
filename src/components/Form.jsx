@@ -5,6 +5,9 @@ import { RiErrorWarningLine } from 'react-icons/ri'
 import { BiShareAlt, BiCopy  } from 'react-icons/bi'
 import CryptoJS from "crypto-js";
 
+import { doc, setDoc, deleteDoc } from "firebase/firestore"; 
+import { db } from '../../firebase-config'
+
 const Form = () => {
 
   const [generateLink, setGenerateLink] = useState(true);
@@ -20,7 +23,7 @@ const Form = () => {
     msgEncryptionHandler();
   }, []);
 
-  const msgEncryptionHandler = () => {
+  const msgEncryptionHandler = async () => {
     setError(false);
 
     const salt = import.meta.env.VITE_ENCRYPTION_SALT;
@@ -56,7 +59,12 @@ const Form = () => {
 
     // console.log(decryptMsg);
     // console.log(decryptedMsg);
+  }
 
+  const burnMsg = async () => {
+    const link = decryptMsg.replace("/", "");
+    await deleteDoc(doc(db, "links", link));
+    setDecryptedMsg("");
     setDecryptMsg("");
   }
 
@@ -100,7 +108,8 @@ const Form = () => {
         </div>
         }
         {downloadLink &&
-            <div className='bg-[#212121] rounded-md p-5'>
+            <div 
+                className='bg-[#212121] rounded-md p-5'>
                 <textarea 
                     readOnly
                     value={encryptedMsg}
@@ -108,7 +117,15 @@ const Form = () => {
                 >
                 </textarea>
                 <div className='flex flex-col min-[510px]:flex-row justify-center'>
-                    <button className='flex hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 min-[510px]:mr-5'>
+                    <button 
+                        className='flex hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 min-[510px]:mr-5'
+                        onClick={async () => {
+                            navigator.clipboard.writeText(encryptedMsg)
+                            const link = encryptedMsg.replace("/", "");
+                            await setDoc(doc(db, "links", link), {})
+                            window.location = 'mailto:'
+                        }}
+                    >
                         <span className='pr-1'>
                             <BiShareAlt size={25}/>
                         </span>
@@ -116,7 +133,11 @@ const Form = () => {
                     </button>
                     <button 
                         className='flex hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 mt-5 min-[510px]:mt-0 min-[510px]:ml-5'
-                        onClick={() => {navigator.clipboard.writeText(encryptedMsg)}}
+                        onClick={ async () => {
+                            navigator.clipboard.writeText(encryptedMsg)
+                            const link = encryptedMsg.replace("/", "");
+                            await setDoc(doc(db, "links", link), {})
+                        }}
                     >
                         <span className='pr-1'>
                             <BiCopy size={25}/>
@@ -148,6 +169,13 @@ const Form = () => {
                     className='scroll text-lg bg-[#212121] rounded-md border-2 border-[#414141] focus:border-[#616161] focus:outline-none p-3 w-full h-full'
                 >
                 </textarea>
+                <button 
+                    onClick={burnMsg}
+                    className="hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md mt-5 p-2"
+                    type="submit"
+                >
+                    Burn Message
+                </button>
             </div>
         }
         <div className='text-lg flex flex-col items-start mt-10 pl-1'>   
@@ -157,6 +185,7 @@ const Form = () => {
                         setDownloadLink(false)
                         setGenerateLink(true)
                         setDecryptLink(false)
+                        setDecryptMsg("")
                         setDecryptedMsg("")
                     }}
                     className='flex items-center hover:text-[#39FF14] ease-in duration-300'
@@ -169,10 +198,14 @@ const Form = () => {
             }
             {!decryptLink && 
                 <div 
-                    onClick={() => {
+                    onClick={ async () => {
                         setDownloadLink(false)
                         setGenerateLink(false)
                         setDecryptLink(true)
+                        setDecryptMsg("")
+                        setDecryptedMsg("")
+                        const link = encryptedMsg.replace("/", "");
+                        await setDoc(doc(db, "links", link), {})
                     }}
                     className='flex items-center hover:text-[#39FF14] ease-in duration-300'
                 >
