@@ -204,7 +204,7 @@ const Form = () => {
                         setDecryptLink(true)
                         setDecryptMsg("")
                         setDecryptedMsg("")
-                        const link = encryptedMsg.replace("/", "");
+                        const link = encryptedMsg.replace("/", "" || "//", "");
                         await setDoc(doc(db, "links", link), {})
                     }}
                     className='flex items-center hover:text-[#39FF14] ease-in duration-300'
