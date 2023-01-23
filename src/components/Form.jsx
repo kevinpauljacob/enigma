@@ -116,7 +116,7 @@ const Form = () => {
                     className="text-sm min-[510px]:text-lg hover:text-black hover:bg-[#39FF14] font-semibold border-2 border-[#39FF14] ease-in duration-500 uppercase rounded-md p-2 mt-3 min-[510px]:mt-0"
                     type="submit"
                 >
-                    Generate Secret Link
+                    Generate Secret Message
                 </button>
             </div>
         </div>
@@ -156,7 +156,7 @@ const Form = () => {
                         <span className='pr-1'>
                             <BiCopy size={25}/>
                         </span>
-                        Copy Link
+                        Copy Message
                     </button>
                 </div>
             </div>
@@ -175,7 +175,7 @@ const Form = () => {
                         <span className='pr-1'>
                             <RiErrorWarningLine size={25}/>
                         </span>
-                        Invalid Link
+                        Invalid Message
                     </div>
                 }
                 <button 
@@ -215,7 +215,7 @@ const Form = () => {
                     <span className='pr-2'>
                         <BsBoxArrowLeft size={20}/>
                     </span>
-                    Generate New Secret Link
+                    Generate New Secret Message
                 </div> 
             }
             {!decryptLink && 
