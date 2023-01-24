@@ -15,12 +15,15 @@ const Form = () => {
   const [decryptLink, setDecryptLink] = useState(false);
 
   const [msgRequiredError, setMsgRequiredError] = useState(false);
+  const [secretRequiredError, setSecretRequiredError] = useState(false);
   const [invalidLink, setInvalidLink] = useState(false);
 
   const [encryptMsg, setEncryptMsg] = useState("");
   const [encryptedMsg, setEncryptedMsg] = useState("");
   const [decryptMsg, setDecryptMsg] = useState("");
   const [decryptedMsg, setDecryptedMsg] = useState("");
+
+  const [secretPass, setSecretPass] = useState("");
 
 
 
@@ -29,10 +32,10 @@ const Form = () => {
   }, []);
 
   const msgEncryptionHandler = async () => {
-    const salt = import.meta.env.VITE_ENCRYPTION_SALT;
+    // const salt = import.meta.env.VITE_ENCRYPTION_SALT;
     const data = CryptoJS.AES.encrypt(
         JSON.stringify(encryptMsg),
-        salt
+        secretPass
       ).toString();
   
     setEncryptedMsg(data);
@@ -60,8 +63,8 @@ const Form = () => {
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
         setInvalidLink(false);
-        const salt = import.meta.env.VITE_ENCRYPTION_SALT;
-        const bytes = CryptoJS.AES.decrypt(decryptMsg, salt);
+        // const salt = import.meta.env.VITE_ENCRYPTION_SALT;
+        const bytes = CryptoJS.AES.decrypt(decryptMsg, secretPass);
         const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
         setDecryptedMsg(data);
       } else {
@@ -77,6 +80,7 @@ const Form = () => {
     await deleteDoc(doc(db, "links", link));
     setDecryptedMsg("");
     setDecryptMsg("");
+    setSecretPass("")
   }
 
   return (
@@ -84,7 +88,7 @@ const Form = () => {
         {generateLink &&
         <div className="flex flex-col items-end bg-[#212121] rounded-md p-3 min-[510px]:p-5">
             <textarea 
-                className="scroll text-md min-[510px]:text-lg bg-[#212121] rounded-md border-2 border-[#313131] focus:border-[#616161] focus:outline-none p-3 w-full"
+                className="scroll text-md min-[510px]:text-lg bg-[#212121] rounded-md border-2 border-[#313131] focus:border-[#616161] focus:outline-none p-3 mb-5 w-full"
                 type="text" 
                 name="text" 
                 placeholder="Type your Secret Message."
@@ -92,6 +96,17 @@ const Form = () => {
                 onChange={({target}) => {
                     setEncryptMsg(target.value)
                     setMsgRequiredError(false)
+                }}
+            />
+            <textarea 
+                className="scroll text-md min-[510px]:text-lg bg-[#212121] rounded-md border-2 border-[#313131] focus:border-[#616161] focus:outline-none p-3 w-full"
+                type="text" 
+                name="text" 
+                placeholder="Type your Secret Password."
+                value={secretPass}
+                onChange={({target}) => {
+                    setSecretPass(target.value)
+                    setSecretRequiredError(false)
                 }}
             />
             <div className='text-sm min-[510px]:text-md flex flex-col min-[510px]:flex-row justify-between items-center w-full mt-5'>
@@ -108,6 +123,14 @@ const Form = () => {
                                 <RiErrorWarningLine size={25}/>
                             </span>
                             Message is compulsory
+                        </div>
+                    }
+                    { secretRequiredError && 
+                        <div className='flex items-center text-red-500 font-semibold mt-2'>
+                            <span className='pr-1'>
+                                <RiErrorWarningLine size={25}/>
+                            </span>
+                            Secret Password is compulsory
                         </div>
                     }
                 </div>
@@ -138,6 +161,7 @@ const Form = () => {
                             const link = encryptedMsg.replaceAll("/", "");
                             await setDoc(doc(db, "links", link), {})
                             window.location = 'mailto:'
+                            setSecretPass("")
                         }}
                     >
                         <span className='pr-1'>
@@ -151,6 +175,7 @@ const Form = () => {
                             navigator.clipboard.writeText(encryptedMsg)
                             const link = encryptedMsg.replaceAll("/", "");
                             await setDoc(doc(db, "links", link), {})
+                            setSecretPass("")
                         }}
                     >
                         <span className='pr-1'>
@@ -167,8 +192,15 @@ const Form = () => {
                     value={decryptMsg} 
                     onChange={({target}) => {setDecryptMsg(target.value)}}
                     placeholder='Paste your link.'
-                    className='scroll text-lg bg-[#212121] rounded-md border-2 border-[#414141] focus:border-[#616161] focus:outline-none p-3 w-full h-full'
+                    className='scroll text-lg bg-[#212121] rounded-md border-2 border-[#414141] focus:border-[#616161] focus:outline-none p-3 mb-5 w-full h-full'
                 >
+                </textarea>
+                <textarea
+                    value={secretPass}
+                    onChange={({target}) => {setSecretPass(target.value)}}
+                    placeholder='Type your Secret Password.'
+                    className='scroll text-lg bg-[#212121] rounded-md border-2 border-[#414141] focus:border-[#616161] focus:outline-none p-3 w-full h-full'
+                >     
                 </textarea>
                 {invalidLink && 
                         <div className='flex items-center text-red-500 font-semibold mt-5'>
@@ -210,9 +242,10 @@ const Form = () => {
                         setDecryptMsg("")
                         setDecryptedMsg("")
                         setInvalidLink(false)
+                        setSecretPass("")
                     }}
-                    className='flex items-center hover:text-[#39FF14] ease-in duration-300'
-                >
+                    className='flex items-center hover:text-[#39FF14] ease-in duration-300 cursor-pointer'
+                > 
                     <span className='pr-2'>
                         <BsBoxArrowLeft size={20}/>
                     </span>
@@ -227,10 +260,11 @@ const Form = () => {
                         setDecryptLink(true)
                         setDecryptMsg("")
                         setDecryptedMsg("")
+                        setSecretPass("")
                         const link = encryptedMsg.replaceAll("/", "");
                         await setDoc(doc(db, "links", link), {})
                     }}
-                    className='flex items-center hover:text-[#39FF14] ease-in duration-300'
+                    className='flex items-center hover:text-[#39FF14] ease-in duration-300 cursor-pointer'
                 >
                     <span className='pr-2'>
                         <BsBoxArrowLeft size={20}/>
