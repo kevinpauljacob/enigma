@@ -1,5 +1,4 @@
-
-# Enigma
+# 🔒Enigma
 
 **Risks of sharing sensitive information like Passwords, Credit Card Information, Private Keys, or other Confidential Data online are increasing daily.**
 
