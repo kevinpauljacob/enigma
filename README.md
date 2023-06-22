@@ -42,25 +42,18 @@ With Enigma, users can create a secret message that can only be accessed once by
 ## Run Locally
 
 Clone the project
-
 ```bash
   git clone https://github.com/itaintkevin/enigma
 ```
-
 Go to the project directory
-
 ```bash
   cd enigma
 ```
-
 Install dependencies
-
 ```bash
   yarn
 ```
-
 Start the server
-
 ```bash
   yarn run dev
 ```
@@ -70,6 +63,6 @@ Start the server
 
 ![App Screenshot](https://cdn.discordapp.com/attachments/918024642860548126/1078350548459335750/mobile_10.png)
 
-![App Screenshot](https://cdn.discordapp.com/attachments/918024642860548126/1078350548195086426/mobile_11.png)
+![App Screenshot](https://cdn.discordapp.com/attachments/918024642860548126/1078350548195086426/mobile_11.png) 
 
 ![App Screenshot](https://cdn.discordapp.com/attachments/918024642860548126/1078350547956015154/mobile_12.png)
