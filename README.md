@@ -1,6 +1,7 @@
 
 # OneRoof
 ![App Screenshot](https://cdn.discordapp.com/attachments/918024642860548126/1121323101465100389/mobile_1.png)
+
 Risks of sharing sensitive information like Passwords, Credit Card Information, Private Keys, or other Confidential Data online are increasing daily. 
 
 Enigma is a one-time secret message application that allows users to securely share private information with others. The application is built using React.js and Vite, styled using Tailwind CSS, and utilizes Crypto.js for encryption.
