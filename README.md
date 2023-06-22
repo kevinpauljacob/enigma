@@ -24,10 +24,9 @@
 
 ## Technologies Used
 
-- 🖥️ React.js: Frontend Library
+- 🖥️ Frontend: React.js 
 - 💻 Backend: Firebase 
-- 🎯 React-Icons: Icon library
-- 💻 Frontend & Backend: Implemented with JavaScript 
+- 🎯 Icon library: React-Icons
 - 🎨 Styling: Tailwind CSS
 - 🔒 Encryption: Crypto.js
 
