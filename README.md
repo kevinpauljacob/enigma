@@ -24,11 +24,12 @@
 
 ## Technologies Used
 
-- 🖥️ Frontend: React.js 
-- 💻 Backend: Firebase 
-- 🎯 Icon library: React-Icons
-- 🎨 Styling: Tailwind CSS
-- 🔒 Encryption: Crypto.js
+- 🖥️ Frontend: Built with React.js
+- 💻 Backend: Powered by Firebase
+- 🎯 React-Icons: Icon Library
+- 💻 Language: Written in JavaScript 
+- 🎨 Styling: Styled using Tailwind CSS
+- 🔒 Encryption: Encrypted using Crypto.js
 
 
 ## Features
